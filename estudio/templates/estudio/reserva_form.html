@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container py-5" style="max-width: 600px;">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4">
+            <h3 class="fw-bold text-dark mb-3">Agendar Nueva Reserva</h3>
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Seleccionar Sala</label>
+                    <select name="sala" class="form-select rounded-3" required>
+                        {% for sala in salas %}
+                            <option value="{{ sala.id }}">{{ sala.nombre }} (${{ sala.precio_hora }}/hr)</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Tipo de Cliente</label>
+                    <select name="tipo_cliente" class="form-select rounded-3" required>
+                        <option value="BANDA">Banda de Ensayo / Amateur</option>
+                        <option value="PRO">Producción / Grabación Profesional</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Fecha y Hora de Inicio</label>
+                    <input type="datetime-local" name="fecha_inicio" class="form-control rounded-3" required>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary rounded-pill fw-bold py-2">
+                        Confirmar y Crear Reserva
+                    </button>
+                        <a href="{% url 'salas' %}" class="btn btn-light rounded-pill text-muted">
+                            Cancelar
+                        </a>
+                                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

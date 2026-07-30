@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Salas de Ensayo{% endblock %}
+
+{% block content %}
+<div class="py-4 container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark mb-0">Salas de Ensayo Disponibles</h2>
+        {% if user.is_staff %}
+            <div class="d-flex gap-2">
+                <a href="{% url 'reporte_salas' %}" class="btn btn-outline-dark rounded-pill px-3 fw-semibold shadow-sm">
+                    Generar Reporte
+                </a>
+                <a href="{% url 'crear_sala' %}" class="btn btn-success rounded-pill px-3 fw-semibold shadow-sm">
+                    Agregar Nueva Sala
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col" style="width: 100px;">Vista</th>
+                        <th scope="col">Nombre de la Sala</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Precio / Hora</th>
+                        
+                        {% if user.is_staff %}
+                            <th scope="col" class="text-center">Estado de Solicitudes</th>
+                            <th scope="col" class="text-center">Acciones Admin</th>
+                        {% else %}
+                            <th scope="col" class="text-center">Reserva</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sala in salas %}
+                    <tr>
+                        <td>
+                            {% if sala.imagen %}
+                                <img src="{{ sala.imagen.url }}" alt="{{ sala.nombre }}" class="rounded-3 shadow-sm" style="width: 80px; height: 60px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/products/5.jpg' %}" alt="{{ sala.nombre }}" class="rounded-3 shadow-sm" style="width: 80px; height: 60px; object-fit: cover;">
+                            {% endif %}
+                        </td>
+                        
+                        <td class="fw-bold text-dark fs-5">{{ sala.nombre }}</td>
+                        <td class="text-muted small">
+                            {{ sala.descripcion|default:"Sala equipada con tratamiento acústico profesional." }}
+                        </td>
+                        <td class="fw-bold text-primary fs-5">${{ sala.precio_hora }} / hora</td>                        
+
+                        {% if user.is_staff %}
+                            <td class="text-center">
+                            <a href="{% url 'admin_reservas' %}?sala={{ sala.id }}" class="btn btn-outline-info rounded-pill px-3 btn-sm fw-semibold shadow-sm">
+                                Gestionar Reservas
+                            </a>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group gap-1" role="group">
+                                    <a href="{% url 'editar_sala' sala.id %}" class="btn btn-outline-warning btn-sm rounded-pill px-3" title="Editar Sala">
+                                        Editar
+                                    </a>
+                                    <button onclick="confirmarEliminarSala({{ sala.id }}, '{{ sala.nombre }}')" class="btn btn-outline-danger btn-sm rounded-pill px-3" title="Eliminar Sala">
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </td>
+                        {% else %}
+                            <td class="text-center">
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'crear_reserva' %}?sala={{ sala.id }}" class="btn btn-primary rounded-pill px-4 btn-sm fw-semibold shadow-sm">
+                                        Reservar
+                                    </a>
+                                {% else %}
+                                    <button onclick="notificarLogin()" class="btn btn-outline-primary rounded-pill px-4 btn-sm fw-semibold shadow-sm">
+                                        Reservar
+                                    </button>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">
+                            No hay salas disponibles en este momento.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function notificarLogin() {
+    Swal.fire({
+        title: '¡Inicia Sesión!',
+        text: 'Debes iniciar sesión para realizar una reserva.',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Iniciar Sesión',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#0d6efd'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "{% url 'login' %}";
+        }
+    });
+}
+
+function confirmarEliminarSala(salaId, nombreSala) {
+    Swal.fire({
+        title: `¿Eliminar "${nombreSala}"?`,
+        text: "Esta acción no se puede deshacer y borrará los datos de la sala.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `/sala/eliminar/${salaId}/`,
+                method: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    Swal.fire({
+                        title: '¡Eliminada!',
+                        text: 'La sala ha sido eliminada correctamente.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function() {
+                    Swal.fire('Error', 'No se pudo eliminar la sala.', 'error');
+                }
+            });
+        }
+    });
+}
+</script>
+{% endblock %}

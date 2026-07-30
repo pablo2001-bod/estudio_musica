@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Iniciar Sesión | TaleStore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                
+                <div class="card-header bg-dark text-white text-center py-4 border-0">
+                    <h3 class="fw-bold mb-1">Iniciar Sesión</h3>
+                    <p class="text-white-50 small mb-0">Accede a tu cuenta en TaleStore</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5 bg-white">
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-3 small p-3 mb-4" role="alert">
+                                {% if message.tags == 'error' %}
+                                    
+                                {% elif message.tags == 'success' %}
+                                     
+                                {% endif %}
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'login' %}">
+                        {% csrf_token %}
+
+                        <div class="form-floating mb-3">
+                            <input type="text" name="username" class="form-control rounded-3" id="floatingUser" placeholder="Usuario" required autocomplete="username">
+                            <label for="floatingUser">Usuario</label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input type="password" name="password" class="form-control rounded-3" id="floatingPassword" placeholder="Contraseña" required autocomplete="current-password">
+                            <label for="floatingPassword">Contraseña</label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm py-2">
+                                Ingresar
+                            </button>
+                            <a href="{% url 'salas' %}" class="btn btn-light rounded-pill fw-semibold text-muted py-2 border">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4 border-top pt-3">
+                        <span class="text-muted small">¿No tienes cuenta?</span>
+                        <a href="{% url 'registro' %}" class="fw-bold text-primary text-decoration-none small ms-1">
+                            Regístrate aquí
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

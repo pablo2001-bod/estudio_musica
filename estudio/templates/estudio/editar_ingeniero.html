@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Ingeniero{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-4 p-4">
+                <h3 class="fw-bold mb-4 text-center">Editar Ingeniero</h3>
+                
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nombre Completo</label>
+                        <input type="text" name="nombre" class="form-control rounded-3" value="{{ ingeniero.nombre }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Correo Electrónico</label>
+                        <input type="email" name="email" class="form-control rounded-3" value="{{ ingeniero.email|default:'' }}" placeholder="ejemplo@gmail.com" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Precio</label>
+                        <input type="number" step="0.01" name="precio_hora" class="form-control rounded-3" value="{{ ingeniero.precio_hora|default:'0.00' }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Especialidad</label>
+                        <input type="text" name="especialidad" class="form-control rounded-3" value="{{ ingeniero.especialidad }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Experiencia</label>
+                        <textarea name="experiencia" class="form-control rounded-3" rows="3">{{ ingeniero.experiencia }}</textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Fotografía</label>
+                        <input type="file" name="imagen" class="form-control rounded-3" accept="image/*">
+                        {% if ingeniero.imagen %}
+                            <small class="text-muted d-block mt-1">Imagen actual: {{ ingeniero.imagen.name }}</small>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'ingenieros' %}" class="btn btn-outline-secondary rounded-pill w-50">Cancelar</a>
+                        <button type="submit" class="btn btn-primary rounded-pill w-50">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

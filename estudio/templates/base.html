@@ -1,0 +1,165 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
+    <title>{% block title %}Gestor de Estudios & Ensayos Musicales{% endblock %}</title>
+
+    <!-- Fuentes y CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"/>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    
+    <!-- Hotkeys.js -->
+    <script src="https://cdn.jsdelivr.net/npm/hotkeys-js@3.13.0/dist/hotkeys.min.js"></script>
+
+    <!-- CSS Local -->
+    <link rel="stylesheet" href="{% static 'css/all.min.css' %}">    
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'swiper/swiper-bundle.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="bg-light">
+    <!-- NAVBAR -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm py-3">
+        <div class="container-fluid px-4">
+            <a href="{% url 'index' %}" class="navbar-brand d-flex align-items-center me-4">
+                <img src="{% static 'images/image.png' %}" alt="Logo Estudio" style="height: 48px; width: auto;">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'salas' %}">Salas de Ensayo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'ingenieros' %}">Ingenieros de Audio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'equipos' %}">Equipos & Mics</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'grid_ocupacion' %}">Cronograma de reservas</a></li> 
+               </ul>
+
+                <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'crear_reserva' %}" class="btn btn-primary rounded-pill px-3 fw-semibold btn-sm">+ Nueva Reserva</a>
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'crear_reserva' %}" class="btn btn-outline-primary rounded-pill px-3 fw-semibold text-white btn-sm">+ Nueva Reserva</a>
+                    {% endif %}
+
+                    {% if user.is_authenticated %}
+                        <span class="text-white me-2 small">Hola, <strong class="text-info">{{ user.username }}</strong></span>
+                        {% if user.is_staff or user.is_superuser %}
+                            <a href="{% url 'gestion_lista' %}" class="btn btn-warning rounded-pill px-3 text-dark fw-semibold btn-sm">Dashboard</a>
+                        {% endif %}
+                        <a href="{% url 'logout' %}" class="btn btn-outline-light rounded-pill px-3 btn-sm">Cerrar Sesión</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-primary rounded-pill px-3 fw-semibold btn-sm">Iniciar Sesión</a>
+                        <a href="{% url 'registro' %}" class="btn btn-outline-light rounded-pill px-3 btn-sm">Registrarse</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="contenido-seccion" class="container mx-auto py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- PORTADA SUPERIOR -->
+    <section id="product-slider">
+        <div class="main-slider swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="{% static 'images/main-slider/5.jpg' %}" alt="Conciertos en Vivo">
+                    <div class="swiper-slide-content">
+                        <h2 class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-4">Música en Vivo</h2>
+                        <p class="mb-4 text-white md:text-2xl">Asegura tu entrada para los mejores shows, festivales <br>y giras internacionales del año.</p>
+                        <a href="#contenido-seccion" class="bg-primary hover:bg-transparent text-white hover:text-white border border-transparent hover:border-white font-semibold px-4 py-2 rounded-full inline-block no-underline">Ver Eventos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BANNERS DE CATEGORÍAS -->
+    <section id="product-banners" class="py-10 bg-white">
+        <div class="container mx-auto">
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full sm:w-1/3 px-4 mb-8">
+                    <div class="category-banner relative overflow-hidden rounded-lg shadow-lg group">
+                        <img src="{% static 'images/cat-image1.jpg' %}" alt="Categoría Rock & Pop" class="w-full h-auto">
+                        <div class="absolute inset-0 bg-gray-light/50"></div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
+                            <h2 class="text-2xl md:text-3xl font-bold mb-4">Rock & Pop</h2>
+                            <a href="{% url 'salas' %}" class="bg-primary text-white font-semibold px-4 py-2 rounded-full inline-block no-underline">Explorar Fechas</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full sm:w-1/3 px-4 mb-8">
+                    <div class="category-banner relative overflow-hidden rounded-lg shadow-lg group">
+                        <img src="{% static 'images/cat-image4.jpg' %}" alt="Categoría Urbana" class="w-full h-auto">
+                        <div class="absolute inset-0 bg-gray-light/50"></div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
+                            <h2 class="text-2xl md:text-3xl font-bold mb-4">Música Urbana & DJs</h2>
+                            <a href="{% url 'ingenieros' %}" class="bg-primary text-white font-semibold px-4 py-2 rounded-full inline-block no-underline">Ver Agenda</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full sm:w-1/3 px-4 mb-8">
+                    <div class="category-banner relative overflow-hidden rounded-lg shadow-lg group">
+                        <img src="{% static 'images/cat-image5.jpg' %}" alt="Estudios" class="w-full h-auto">
+                        <div class="absolute inset-0 bg-gray-light/50"></div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
+                            <h2 class="text-2xl md:text-3xl font-bold mb-4">Estudios de Grabación</h2>
+                            <a href="{% url 'salas' %}" class="bg-primary text-white font-semibold px-4 py-2 rounded-full inline-block no-underline">Reservar Horas</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts compartidos -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+
+    {% block extra_js %}{% endblock %}
+    <script>
+        document.addEventListener('keydown', function(event) {
+            // ATAJO INTELIGENTE: Alt + R o Ctrl + Alt + R
+            if ((event.altKey && (event.key === 'r' || event.key === 'R')) || 
+                (event.ctrlKey && event.altKey && (event.key === 'r' || event.key === 'R'))) {
+                
+                event.preventDefault();
+
+                {% if user.is_authenticated and user.is_staff %}
+                    // Si es ADMIN -> Va a la Administración de Reservas (Dashboard)
+                    window.location.href = "{% url 'admin_reservas' %}";
+                {% else %}
+                    // Si es CLIENTE o USUARIO NORMAL -> Va a Nueva Reserva
+                    window.location.href = "{% url 'crear_reserva' %}";
+                {% endif %}
+            }
+        });
+    </script>
+
+</body>
+</html>

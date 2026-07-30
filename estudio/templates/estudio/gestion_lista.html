@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestión de Recursos | Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold text-dark mb-0">Gestión e Ingreso de Recursos</h2>
+        </div>
+        {% if user.is_staff %}
+            <div class="d-flex gap-2">
+                <button class="btn btn-success rounded-pill btn-sm fw-bold px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalSala">
+                    Nueva Sala
+                </button>
+                <button class="btn btn-info text-white rounded-pill btn-sm fw-bold px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalIngeniero">
+                    Nuevo Ingeniero
+                </button>
+                <button class="btn btn-warning rounded-pill btn-sm fw-bold px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalEquipo">
+                    Nuevo Equipo
+                </button>
+                {% if user.is_staff %}
+                    <a href="{% url 'dashboard_reportes' %}" class="btn btn-warning me-2">Reportes</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0">Salas de Ensayo</h5>
+                    <span class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1 fs-7">{{ salas|length }} registradas</span>
+                </div>
+                
+                <ul class="list-group list-group-flush">
+                    {% for s in salas %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-bottom px-0 py-2">
+                            <div>
+                                <span class="fw-semibold text-dark d-block">{{ s.nombre }}</span>
+                                <small class="text-success fw-bold">${{ s.precio_hora }}/hora</small>
+                            </div>
+                            {% if user.is_staff %}
+                                <div class="btn-group">
+                                    <a href="{% url 'editar_sala' s.id %}" class="btn btn-light btn-sm rounded-circle shadow-sm me-1" title="Editar">✏️</a>
+                                    <button onclick="confirmarEliminar('sala', {{ s.id }}, '{{ s.nombre }}')" class="btn btn-light btn-sm rounded-circle shadow-sm text-danger" title="Eliminar">🗑️</button>
+                                </div>
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item border-0 text-muted small py-3 text-center">No hay salas registradas.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0">Ingenieros</h5>
+                    <span class="badge bg-info-subtle text-info rounded-pill px-2 py-1 fs-7">{{ ingenieros|length }} registrados</span>
+                </div>
+                
+                <ul class="list-group list-group-flush">
+                    {% for ing in ingenieros %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-bottom px-0 py-2">
+                            <div>
+                                <span class="fw-semibold text-dark d-block">{{ ing.nombre }}</span>
+                                <small class="text-muted">{{ ing.especialidad }}</small>
+                            </div>
+                            {% if user.is_staff %}
+                                <div class="btn-group">
+                                    <a href="{% url 'editar_ingeniero' ing.id %}" class="btn btn-light btn-sm rounded-circle shadow-sm me-1" title="Editar">✏️</a>
+                                    <button onclick="confirmarEliminar('ingeniero', {{ ing.id }}, '{{ ing.nombre }}')" class="btn btn-light btn-sm rounded-circle shadow-sm text-danger" title="Eliminar">🗑️</button>
+                                </div>
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item border-0 text-muted small py-3 text-center">No hay ingenieros registrados.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0">Equipos & Mics</h5>
+                    <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill px-2 py-1 fs-7">{{ equipos|length }} en catálogo</span>
+                </div>
+                
+                <ul class="list-group list-group-flush">
+                    {% for eq in equipos %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-bottom px-0 py-2">
+                            <div>
+                                <span class="fw-semibold text-dark d-block">{{ eq.nombre }}</span>
+                                <small class="badge bg-light text-dark border me-1">{{ eq.categoria }}</small>
+                                <small class="text-success fw-bold">${{ eq.precio_alquiler }}</small>
+                            </div>
+                            {% if user.is_staff %}
+                                <div class="btn-group">
+                                    <a href="{% url 'editar_equipo' eq.id %}" class="btn btn-light btn-sm rounded-circle shadow-sm me-1" title="Editar">✏️</a>
+                                    <button onclick="confirmarEliminar('equipo', {{ eq.id }}, '{{ eq.nombre }}')" class="btn btn-light btn-sm rounded-circle shadow-sm text-danger" title="Eliminar">🗑️</button>
+                                </div>
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item border-0 text-muted small py-3 text-center">No hay equipos registrados.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CREAR SALA -->
+<div class="modal fade" id="modalSala" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="{% url 'crear_sala' %}" class="modal-content rounded-4 border-0 shadow">
+      {% csrf_token %}
+      <div class="modal-header bg-primary text-white rounded-top-4">
+        <h5 class="modal-title fw-bold">Agregar Nueva Sala</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre de la Sala:</label>
+            <input type="text" name="nombre" class="form-control rounded-3" placeholder="Ej. Sala Premium A" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Precio por Hora ($):</label>
+            <input type="number" step="0.01" name="precio_hora" class="form-control rounded-3" placeholder="25.00" required>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">Guardar Sala</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL CREAR INGENIERO -->
+<div class="modal fade" id="modalIngeniero" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="{% url 'crear_ingeniero' %}" class="modal-content rounded-4 border-0 shadow">
+      {% csrf_token %}
+      <div class="modal-header bg-info text-white rounded-top-4">
+        <h5 class="modal-title fw-bold">Agregar Ingeniero</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre Completo:</label>
+            <input type="text" name="nombre" class="form-control rounded-3" placeholder="Ej. Carlos Santana" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Especialidad:</label>
+            <input type="text" name="especialidad" class="form-control rounded-3" placeholder="Ej. Mezcla & Masterización" required>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-info text-white rounded-pill px-4 fw-bold">Guardar Ingeniero</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL CREAR EQUIPO -->
+<div class="modal fade" id="modalEquipo" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="{% url 'crear_equipo' %}" class="modal-content rounded-4 border-0 shadow">
+      {% csrf_token %}
+      <div class="modal-header bg-warning text-dark rounded-top-4">
+        <h5 class="modal-title fw-bold">Agregar Equipo / Micrófono</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre del Equipo:</label>
+            <input type="text" name="nombre" class="form-control rounded-3" placeholder="Ej. Micrófono Shure SM7B" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Categoría:</label>
+            <input type="text" name="categoria" class="form-control rounded-3" placeholder="Ej. Micrófonos, Amplificadores" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Precio de Alquiler ($):</label>
+            <input type="number" step="0.01" name="precio_alquiler" class="form-control rounded-3" placeholder="10.00" required>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold">Guardar Equipo</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmarEliminar(tipo, id, nombre) {
+    let urlEliminar = `/${tipo}/eliminar/${id}/`;
+
+    Swal.fire({
+        title: `¿Eliminar ${tipo}?`,
+        text: `¿Estás seguro de quitar "${nombre}" del sistema?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: urlEliminar,
+                method: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    Swal.fire({
+                        title: '¡Eliminado!',
+                        text: 'El registro se ha eliminado con éxito.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr) {
+                    let mensaje = 'No se pudo eliminar el elemento.';
+                    if(xhr.responseJSON && xhr.responseJSON.message) {
+                        mensaje = xhr.responseJSON.message;
+                    }
+                    Swal.fire('Error', mensaje, 'error');
+                }
+            });
+        }
+    });
+}
+</script>
+{% endblock %}

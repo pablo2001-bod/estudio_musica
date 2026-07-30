@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Equipos & Mics{% endblock %}
+
+{% block content %}
+<div class="py-4 container">
+    <!-- ENCABEZADO CON BOTONES (SOLO ADMIN) -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark mb-0">Equipos, Micrófonos y Amplificadores</h2>
+        {% if user.is_staff %}
+            <div class="d-flex gap-2">
+                <a href="{% url 'reporte_equipos' %}" class="btn btn-outline-dark rounded-pill px-3 fw-semibold shadow-sm">
+                    Reporte
+                </a>
+                <a href="{% url 'crear_equipo' %}" class="btn btn-success rounded-pill px-3 fw-semibold shadow-sm">
+                    Agregar Nuevo Equipo
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- TABLA DE EQUIPOS -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col" style="width: 100px;">Vista</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Precio Alquiler</th>
+                        
+                        {% if user.is_staff %}
+                            <th scope="col" class="text-center">Estado</th>
+                            <th scope="col" class="text-center">Acciones Admin</th>
+                        {% else %}
+                            <th scope="col" class="text-center">Disponibilidad</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for eq in equipos %}
+                    <tr>
+                        <!-- VISTA DE IMAGEN -->
+                        <td>
+                            {% if eq.imagen %}
+                                <img src="{{ eq.imagen.url }}" alt="{{ eq.nombre }}" class="rounded-3 shadow-sm" style="width: 80px; height: 60px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/products/5.jpg' %}" alt="{{ eq.nombre }}" class="rounded-3 shadow-sm" style="width: 80px; height: 60px; object-fit: cover;">
+                            {% endif %}
+                        </td>
+                        
+                        <td class="fw-bold text-dark fs-5">{{ eq.nombre }}</td>
+                        <td>
+                            <span class="badge bg-info-subtle text-info border border-info px-3 py-1 rounded-pill">
+                                {{ eq.categoria|default:"General" }}
+                            </span>
+                        </td>
+                        <td class="fw-bold text-success fs-5">${{ eq.precio_alquiler }}</td>
+
+                        {% if user.is_staff %}
+                            <!-- ESTADO DE DISPONIBILIDAD -->
+                            <td class="text-center">
+                                {% if eq.disponible %}
+                                    <span class="badge bg-success-subtle text-success border border-success px-3 py-2 rounded-pill">Disponible</span>
+                                {% else %}
+                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary px-3 py-2 rounded-pill">En Uso / Agotado</span>
+                                {% endif %}
+                            </td>
+                            <!-- ACCIONES ADMIN -->
+                            <td class="text-center">
+                                <div class="btn-group gap-1" role="group">
+                                    <a href="{% url 'editar_equipo' eq.id %}" class="btn btn-outline-warning btn-sm rounded-pill px-3" title="Editar Equipo">
+                                        Editar
+                                    </a>
+                                    <button onclick="confirmarEliminarEquipo({{ eq.id }}, '{{ eq.nombre }}')" class="btn btn-outline-danger btn-sm rounded-pill px-3" title="Eliminar Equipo">
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </td>
+                        {% else %}
+                            <td class="text-center">
+                                {% if eq.disponible %}
+                                    <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill">Disponible en Recepción</span>
+                                {% else %}
+                                    <span class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-pill">No Disponible</span>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">
+                            No hay equipos registrados en este momento.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmarEliminarEquipo(equipoId, nombreEquipo) {
+    Swal.fire({
+        title: `¿Eliminar "${nombreEquipo}"?`,
+        text: "Esta acción quitará el equipo del catálogo de alquiler.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `/equipo/eliminar/${equipoId}/`,
+                method: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    Swal.fire({
+                        title: '¡Eliminado!',
+                        text: 'El equipo ha sido eliminado.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr) {
+                    // Muestra el mensaje exacto que envía Django o el error HTTP
+                    let mensajeError = 'Error al intentar eliminar.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        mensajeError = xhr.responseJSON.message;
+                    }
+                    Swal.fire('Error', mensajeError, 'error');
+                }
+            });
+        }
+    });
+}
+</script>
+
+{% endblock %}

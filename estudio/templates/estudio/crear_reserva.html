@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nueva Reserva | TaleStore{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h2 class="fw-bold text-dark mb-0">Reservar Sesión de Ensayo</h2>
+        <button id="btn-tour-reserva" class="btn btn-outline-info rounded-pill px-3 fw-semibold shadow-sm">
+             ¿Cómo reservar?
+        </button>
+    </div>
+
+    <form id="form-crear-reserva">
+        {% csrf_token %}
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white" id="step-datos">
+                    <h5 class="fw-bold mb-3 text-primary">1. Sala y Horarios</h5>
+
+                    <div class="mb-3" id="step-sala">
+                        <label class="form-label fw-semibold">Selecciona la Sala:</label>
+                        <select name="sala" class="form-select rounded-3" required>
+                            <option value="" selected disabled>-- Elegir Sala --</option>
+                            {% for sala in salas %}
+                                <option value="{{ sala.id }}">{{ sala.nombre }} (${{ sala.precio_hora }}/h)</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="row g-2 mb-3" id="step-fechas">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Inicio:</label>
+                            <input type="datetime-local" name="fecha_inicio" class="form-control rounded-3" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Fin:</label>
+                            <input type="datetime-local" name="fecha_fin" class="form-control rounded-3" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3" id="step-ingeniero">
+                        <label class="form-label fw-semibold">Ingeniero de Audio (Opcional):</label>
+                        <select name="ingeniero" class="form-select rounded-3">
+                            <option value="">Sin ingeniero</option>
+                            {% for ing in ingenieros %}
+                                <option value="{{ ing.id }}">{{ ing.nombre }} ({{ ing.especialidad }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="fw-bold mb-3 text-primary">2. Equipos Adicionales</h5>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-5" id="step-catalogo">
+                                <small class="fw-bold text-muted d-block mb-2">Disponibles:</small>
+                                <div id="equipos-catalog" class="d-flex flex-column gap-2 overflow-auto p-2 bg-light rounded-3 border" style="max-height: 250px;">
+                                    {% for eq in equipos %}
+                                        <div class="card p-2 shadow-sm border-0 equipo-item bg-white d-flex flex-row align-items-center gap-2" data-id="{{ eq.id }}" data-nombre="{{ eq.nombre }}" style="cursor: grab;">
+                                            {% if eq.imagen %}
+                                                <img src="{{ eq.imagen.url }}" alt="{{ eq.nombre }}" class="rounded-2" style="width: 42px; height: 42px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="bg-secondary bg-opacity-10 rounded-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                                                    
+                                                </div>
+                                            {% endif %}
+                                            <div class="d-flex flex-column text-truncate">
+                                                <span class="fw-semibold small text-truncate">{{ eq.nombre }}</span>
+                                                <span class="text-success extra-small fw-bold">+${{ eq.precio_alquiler }}</span>
+                                            </div>
+                                        </div>
+                                    {% empty %}
+                                        <small class="text-muted">Sin equipos disponibles.</small>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="col-md-7" id="step-dropzone">
+                                <small class="fw-bold text-muted d-block mb-2">Equipos Incluidos:</small>
+                                <div id="drop-zone" class="border border-2 border-dashed border-primary rounded-3 p-3 bg-light text-center d-flex flex-wrap gap-2 align-content-start" style="min-height: 250px;">
+                                    <p class="text-muted small my-auto w-100" id="drop-placeholder">
+                                        Arrastra aquí los instrumentos o micrófonos que necesites
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-top mt-3" id="step-enviar">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow-sm">
+                            Enviar Solicitud de Reserva
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // DRAG & DROP CON JQUERY UI
+    $(".equipo-item").draggable({
+        revert: "invalid",
+        helper: "clone",
+        cursor: "move"
+    });
+
+    $("#drop-zone").droppable({
+        accept: ".equipo-item",
+        drop: function(event, ui) {
+            let id = ui.draggable.data('id');
+            let nombre = ui.draggable.data('nombre');
+
+            $("#drop-placeholder").hide();
+
+            if ($(`#input-eq-${id}`).length === 0) {
+                $(this).append(`
+                    <div class="badge bg-primary fs-6 p-2 d-flex align-items-center gap-2 selected-eq shadow-sm" id="badge-eq-${id}">
+                        <span>${nombre}</span>
+                        <input type="hidden" name="equipos" value="${id}" id="input-eq-${id}">
+                        <button type="button" class="btn-close btn-close-white btn-sm" onclick="removerEquipo(${id})"></button>
+                    </div>
+                `);
+            }
+        }
+    });
+
+    $('#form-crear-reserva').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: "{% url 'crear_reserva' %}",
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(res) {
+                Swal.fire({
+                    title: '¡Solicitud Enviada!',
+                    text: res.message,
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    window.location.href = "{% url 'index' %}";
+                });
+            },
+            error: function(xhr) {
+                let mensajeError = 'No se pudo enviar la solicitud.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    mensajeError = xhr.responseJSON.message;
+                }
+                Swal.fire('Atención', mensajeError, 'warning');
+            }
+        });
+    });
+
+    $('#btn-tour-reserva').on('click', function() {
+        const driver = window.driver.js.driver;
+        const driverObj = driver({
+            showProgress: true,
+            nextBtnText: 'Siguiente',
+            prevBtnText: 'Anterior',
+            doneBtnText: '¡Entendido!',
+            steps: [
+                { element: '#step-sala', popover: { title: '1. Selección de Sala', description: 'Escoge la sala donde deseas ensayar.' } },
+                { element: '#step-fechas', popover: { title: '2. Definir Horario', description: 'Ingresa la hora exacta de inicio y fin.' } },
+                { element: '#step-catalogo', popover: { title: '3. Catálogo de Equipos', description: 'Arrastra cualquiera de estos equipos al recuadro continuo.' } },
+                { element: '#step-dropzone', popover: { title: '4. Zona de Selección', description: 'Los equipos soltados aquí se sumarán a tu solicitud.' } },
+                { element: '#step-enviar', popover: { title: '5. Confirmar', description: 'Haz clic para enviar la solicitud. El administrador la revisará y te responderá por correo.' } }
+            ]
+        });
+        driverObj.drive();
+    });
+});
+
+function removerEquipo(id) {
+    $(`#badge-eq-${id}`).remove();
+    if ($('#drop-zone .selected-eq').length === 0) {
+        $("#drop-placeholder").show();
+    }
+}
+</script>
+{% endblock %}

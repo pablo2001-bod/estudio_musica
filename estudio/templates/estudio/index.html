@@ -1,0 +1,411 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+    <!-- Slider Principal -->
+    <section id="product-slider">
+        <div class="main-slider swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="{% static 'images/main-slider/5.jpg' %}" alt="Conciertos en Vivo">
+                    <div class="swiper-slide-content">
+                        <h2 class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-4">Música en Vivo</h2>
+                        <p class="mb-4 text-white md:text-2xl">Asegura tu entrada para los mejores shows, festivales <br>y giras internacionales del año.</p>
+                        <a href="#" class="bg-primary hover:bg-transparent text-white hover:text-white border border-transparent hover:border-white font-semibold px-4 py-2 rounded-full inline-block no-underline">Ver Eventos</a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <img src="{% static 'images/main-slider/2.png' %}" alt="Estudio de Grabación">
+                    <div class="swiper-slide-content">
+                        <h2 class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-4">Reserva tu Ensayo</h2>
+                        <p class="mb-4 text-white md:text-2xl">Equipos profesionales de audio, salas acústicas <br>y producción musical a tu alcance.</p>
+                        <a href="#" class="bg-white hover:bg-transparent text-black hover:text-white font-semibold px-4 py-2 rounded-full inline-block border border-transparent hover:border-white no-underline">Reservar Sala</a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <img src="{% static 'images/main-slider/4.jpg' %}" alt="Próximos Festivales">
+                    <div class="swiper-slide-content">
+                        <h2 class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-4">Giras 2026</h2>
+                        <p class="mb-4 text-white md:text-2xl">Entradas preventa exclusivas para miembros <br>y experiencias VIP en backstage.</p>
+                        <a href="#" class="bg-primary hover:bg-transparent text-white hover:text-white border border-transparent hover:border-white font-semibold px-4 py-2 rounded-full inline-block no-underline">Comprar Tickets</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+    </section>
+
+    <!-- Banners de Categorías Musicales -->
+    <section id="product-banners">
+        <div class="container mx-auto py-10">
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full sm:w-1/3 px-4 mb-8">
+                    <div class="category-banner relative overflow-hidden rounded-lg shadow-lg group">
+                        <img src="{% static 'images/cat-image1.jpg' %}" alt="Categoría Rock & Pop" class="w-full h-auto">
+                        <div class="absolute inset-0 bg-gray-light/50"></div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
+                            <h2 class="text-2xl md:text-3xl font-bold mb-4">Rock & Pop</h2>
+                            <a href="#" class="bg-primary hover:bg-transparent border border-transparent hover:border-white text-white hover:text-white font-semibold px-4 py-2 rounded-full inline-block no-underline">Explorar Fechas</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full sm:w-1/3 px-4 mb-8">
+                    <div class="category-banner relative overflow-hidden rounded-lg shadow-lg group">
+                        <img src="{% static 'images/cat-image4.jpg' %}" alt="Categoría Electrónica & Urbana" class="w-full h-auto">
+                        <div class="absolute inset-0 bg-gray-light/50"></div>
+                        <div class="category-text absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4 transition duration-300">
+                            <h2 class="text-2xl md:text-3xl font-bold mb-4">Música Urbana & DJs</h2>
+                            <a href="#" class="bg-primary hover:bg-transparent border border-transparent hover:border-white text-white hover:text-white font-semibold px-4 py-2 rounded-full inline-block no-underline">Ver Agenda</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full sm:w-1/3 px-4 mb-8">
+                    <div class="category-banner relative overflow-hidden rounded-lg shadow-lg group">
+                        <img src="{% static 'images/cat-image5.jpg' %}" alt="Salas de Ensayo" class="w-full h-auto">
+                        <div class="absolute inset-0 bg-gray-light/50"></div>
+                        <div class="category-text absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4 transition duration-300">
+                            <h2 class="text-2xl md:text-3xl font-bold mb-4">Estudios de Grabación</h2>
+                            <a href="#" class="bg-primary hover:bg-transparent border border-transparent hover:border-white text-white hover:text-white font-semibold px-4 py-2 rounded-full inline-block no-underline">Reservar Horas</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conciertos Destacados / Próximos Eventos -->
+    <section id="popular-products">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl font-bold mb-8">Próximos Conciertos</h2>
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+                    <div class="bg-white p-3 rounded-lg shadow-lg text-black">
+                        <img src="{% static 'images/products/1.jpg' %}" alt="Noche de Rock Alternativo" class="w-full object-cover mb-4 rounded-lg">
+                        <a href="#" class="text-lg font-semibold mb-2 block hover:text-primary no-underline text-black">Noche de Rock & Metal</a>
+                        <p class="my-2 text-gray-500 text-sm">Estadio Central • 15 de Agosto</p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-lg font-bold text-primary">$35.00</span>
+                            <span class="text-sm line-through ml-2 text-gray-400">$45.00</span>
+                        </div>
+                        <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full transition duration-300">Reservar Ticket</button>
+                    </div>
+                </div>
+                <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+                    <div class="bg-white p-3 rounded-lg shadow-lg text-black">
+                        <img src="{% static 'images/products/2.jpg' %}" alt="Electronic Music Fest" class="w-full object-cover mb-4 rounded-lg">
+                        <a href="#" class="text-lg font-semibold mb-2 block hover:text-primary no-underline text-black">Electronic Beats Fest</a>
+                        <p class="my-2 text-gray-500 text-sm">Arena Club • 22 de Agosto</p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-lg font-bold text-gray-900">$50.00</span>
+                        </div>
+                        <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full transition duration-300">Reservar Ticket</button>
+                    </div>
+                </div>
+                <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+                    <div class="bg-white p-3 rounded-lg shadow-lg text-black">
+                        <img src="{% static 'images/products/3.jpg' %}" alt="Sesión de Jazz Acústico" class="w-full object-cover mb-4 rounded-lg">
+                        <a href="#" class="text-lg font-semibold mb-2 block hover:text-primary no-underline text-black">Jazz & Blues Lounge</a>
+                        <p class="my-2 text-gray-500 text-sm">Teatro Principal • 29 de Agosto</p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-lg font-bold text-gray-900">$25.00</span>
+                            <span class="text-sm line-through ml-2 text-gray-400">$30.00</span>
+                        </div>
+                        <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full transition duration-300">Reservar Ticket</button>
+                    </div>
+                </div>
+                <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+                    <div class="bg-white p-3 rounded-lg shadow-lg text-black">
+                        <img src="{% static 'images/products/4.jpg' %}" alt="Urban Fest Night" class="w-full object-cover mb-4 rounded-lg">
+                        <a href="#" class="text-lg font-semibold block hover:text-primary no-underline text-black">Urban Trap & Reggaeton</a>
+                        <p class="my-2 text-gray-500 text-sm">Explanada Sur • 05 de Septiembre</p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-lg font-bold text-primary">$40.00</span>
+                            <span class="text-sm line-through ml-2 text-gray-400">$55.00</span>
+                        </div>
+                        <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full transition duration-300">Reservar Ticket</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alquiler de Salas / Servicios del Estudio -->
+    <section id="latest-products" class="py-10">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl font-bold mb-8">Salas de Ensayo y Producción</h2>
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+                    <div class="bg-white p-3 rounded-lg shadow-lg text-black">
+                        <img src="{% static 'images/products/5.jpg' %}" alt="Sala A - Ensayos" class="w-full object-cover mb-4 rounded-lg">
+                        <a href="#" class="text-lg font-semibold mb-2 block hover:text-primary no-underline text-black">Sala A (Ensayo Pro)</a>
+                        <p class="my-2 text-gray-500 text-sm">Incluye Batería, Amplificadores y Mics</p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-lg font-bold text-primary">$20.00 <small class="text-xs font-normal">/ hora</small></span>
+                        </div>
+                        <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full transition duration-300">Agendar Sala</button>
+                    </div>
+                </div>
+                <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+                    <div class="bg-white p-3 rounded-lg shadow-lg text-black">
+                        <img src="{% static 'images/products/6.jpg' %}" alt="Estudio B - Grabación" class="w-full object-cover mb-4 rounded-lg">
+                        <a href="#" class="text-lg font-semibold mb-2 block hover:text-primary no-underline text-black">Estudio B (Grabación)</a>
+                        <p class="my-2 text-gray-500 text-sm">Cabina insonorizada + Técnico de Audio</p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-lg font-bold text-gray-900">$45.00 <small class="text-xs font-normal">/ hora</small></span>
+                        </div>
+                        <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full transition duration-300">Agendar Sala</button>
+                    </div>
+                </div>
+                <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+                    <div class="bg-white p-3 rounded-lg shadow-lg text-black">
+                        <img src="{% static 'images/products/7.jpg' %}" alt="Mezcla y Masterización" class="w-full object-cover mb-4 rounded-lg">
+                        <a href="#" class="text-lg font-semibold mb-2 block hover:text-primary no-underline text-black">Mezcla y Masterización</a>
+                        <p class="my-2 text-gray-500 text-sm">Producción digital por canción</p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-lg font-bold text-gray-900">$80.00</span>
+                        </div>
+                        <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full transition duration-300">Solicitar Servicio</button>
+                    </div>
+                </div>
+                <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+                    <div class="bg-white p-3 rounded-lg shadow-lg text-black">
+                        <img src="{% static 'images/products/8.jpg' %}" alt="Pase VIP Backstage" class="w-full object-cover mb-4 rounded-lg">
+                        <a href="#" class="text-lg font-semibold mb-2 block hover:text-primary no-underline text-black">Pase VIP & Backstage</a>
+                        <p class="my-2 text-gray-500 text-sm">Acceso exclusivo a Meet & Greet</p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-lg font-bold text-primary">$120.00</span>
+                        </div>
+                        <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full transition duration-300">Comprar Pase</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Marcas / Auspiciantes / Sellos -->
+    <section id="brands" class="bg-white py-16 px-4">
+        <div class="container mx-auto max-w-screen-xl px-4 testimonials text-center">
+            <h2 class="text-5xl font-bold mb-4 text-black">Marcas y <span class="text-primary">Auspiciantes</span></h2>
+            <p class="my-7 text-gray-600">Equipos de alta gama e instrumentos de marcas líderes en el mercado musical</p>
+        </div>
+    </section>
+
+    <!-- Banner Principal Call-to-Action -->
+    <section id="banner" class="relative my-16">
+        <div class="container mx-auto px-4 py-20 rounded-lg relative bg-cover bg-center" style="background-image: url('{% static 'images/banner1.jpg' %}');">
+            <div class="absolute inset-0 bg-black opacity-40 rounded-lg"></div>
+            <div class="relative flex flex-col items-center justify-center h-full text-center text-white py-20">
+                <h2 class="text-4xl font-bold mb-6">Vive la Experiencia de la Música en Vivo</h2>
+                <div class="flex space-x-4">
+                    <a href="#" class="bg-primary hover:bg-transparent text-white hover:text-primary border border-transparent hover:border-primary font-semibold px-4 py-2 rounded-full inline-block no-underline transition duration-300">Ver Conciertos</a>
+                    <a href="#" class="bg-primary hover:bg-transparent text-white hover:text-primary border border-transparent hover:border-primary font-semibold px-4 py-2 rounded-full inline-block no-underline transition duration-300">Reservar Ensayo</a>
+                    <a href="#" class="bg-primary hover:bg-transparent text-white hover:text-primary border border-transparent hover:border-primary font-semibold px-4 py-2 rounded-full inline-block no-underline transition duration-300">Promociones</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog / Noticias Musicales -->
+    <section class="py-16">
+        <div class="text-center mb-12 lg:mb-20">
+            <h2 class="text-5xl font-bold mb-4 text-black">Blog & <span class="text-primary">Novedades Musicales</span></h2>
+            <p class="my-7 text-gray-600">Entrevistas a artistas, reseñas de álbumes y noticias sobre la escena musical</p>
+        </div>
+        <div class="relative items-center w-full px-5 py-12 mx-auto md:px-12 lg:px-24 max-w-7xl">
+            <div class="grid w-full grid-cols-1 gap-6 mx-auto lg:grid-cols-3">
+                <div class="flex flex-col p-6 bg-white rounded-xl shadow-lg text-black">
+                    <img class="object-cover object-center w-full mb-8 rounded-xl h-48" src="{% static 'images/fashion-trends.jpg' %}" alt="noticias concierto">
+                    <h2 class="mb-2 text-xs font-semibold tracking-widest text-primary uppercase">Noticias & Festivales</h2>
+                    <h1 class="mb-4 text-2xl font-semibold leading-none tracking-tighter text-gray-dark lg:text-3xl">Los festivales de música más grandes confirmados para esta temporada</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // ==========================================
+    // 1. FULLCALENDAR (Grid de Ocupación)
+    // ==========================================
+    var calendarEl = document.getElementById('calendar');
+    var isUserAdmin = {% if user.is_staff or user.is_superuser %}true{% else %}false{% endif %};
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'timeGridWeek',
+        locale: 'es',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: "{% url 'api_reservas' %}",
+        editable: true, // Permite mover la reserva de fecha/hora
+        
+        // Cambio de fecha mediante Drag in Calendar (Para usuario normal y admin)
+        eventDrop: function(info) {
+            var reservaId = info.event.id;
+            var nuevaFechaInicio = info.event.start.toISOString();
+
+            // Petición AJAX para actualizar la fecha
+            $.ajax({
+                url: '/reserva/actualizar-fecha/',
+                method: 'POST',
+                data: {
+                    'id': reservaId,
+                    'fecha_inicio': nuevaFechaInicio,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Fecha Actualizada',
+                        text: 'La reserva ha cambiado de horario con éxito.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                },
+                error: function() {
+                    info.revert(); // Devuelve el evento si hay error
+                    Swal.fire('Error', 'No tienes permiso para modificar esta reserva.', 'error');
+                }
+            });
+        },
+
+        // Clic en una reserva para Editar/Eliminar (Solo Admin o Propietario)
+        eventClick: function(info) {
+            let opcionesModal = {
+                title: info.event.title,
+                text: "¿Qué acción deseas realizar con esta reserva?",
+                showCancelButton: true,
+                confirmButtonText: 'Cambiar Horario',
+                cancelButtonText: 'Cerrar'
+            };
+
+            if (isUserAdmin) {
+                opcionesModal.showDenyButton = true;
+                opcionesModal.denyButtonText = '❌ Cancelar Reserva';
+            }
+
+            Swal.fire(opcionesModal).then((result) => {
+                if (result.isConfirmed) {
+                    // Editar fecha/detalles
+                    window.location.href = `/reserva/editar/${info.event.id}/`;
+                } else if (result.isDenied && isUserAdmin) {
+                    // Eliminar / Cancelar Reserva (Solo Admin)
+                    $.ajax({
+                        url: `/reserva/eliminar/${info.event.id}/`,
+                        method: 'POST',
+                        data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                        success: function() {
+                            info.event.remove();
+                            Swal.fire('Eliminado', 'La reserva ha sido cancelada.', 'success');
+                        }
+                    });
+                }
+            });
+        }
+    });
+    calendar.render();
+
+
+    // ==========================================
+    // 2. JQUERY UI (Drag & Drop de Equipos)
+    // ==========================================
+    $(".equipo-draggable").draggable({
+        revert: "invalid",
+        helper: "clone",
+        cursor: "move"
+    });
+
+    $("#drop-zone-reserva").droppable({
+        accept: ".equipo-draggable",
+        drop: function(event, ui) {
+            var equipoId = ui.draggable.data('id');
+            var equipoPrecio = ui.draggable.data('precio');
+
+            // Enviar por AJAX el equipo a la reserva activa
+            $.ajax({
+                url: '/reserva/agregar-equipo-extra/',
+                method: 'POST',
+                data: {
+                    'equipo_id': equipoId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Equipo Añadido!',
+                        text: `Se ha cargado +$${equipoPrecio} al total de la reserva.`,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                },
+                error: function() {
+                    Swal.fire('Atención', 'Selecciona primero una reserva para asignar este equipo.', 'warning');
+                }
+            });
+        }
+    });
+
+
+    // ==========================================
+    // 3. HOTKEYS-JS (Atajo F12 Cobro Exprés)
+    // ==========================================
+    hotkeys('f12', function(event, handler) {
+        event.preventDefault(); // Evita abrir las herramientas de desarrollo del navegador
+
+        Swal.fire({
+            title: '⚡ Cobro Exprés en Recepción',
+            html: `
+                <div class="text-start">
+                    <p><strong>Banda Actual:</strong> Los Músicos (Sala A)</p>
+                    <p><strong>Tiempo:</strong> 2 Horas</p>
+                    <p><strong>Extras:</strong> Set Microfonos SM57 ($15.00)</p>
+                    <hr>
+                    <h4 class="text-end text-success font-bold">Total: $55.00</h4>
+                </div>
+            `,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: '💳 Registrar Pago Inmediato',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire('¡Pago Exitoso!', 'El cobro ha sido procesado correctamente.', 'success');
+            }
+        });
+    });
+
+
+    // ==========================================
+    // 4. DRIVER.JS (Tour Asistido de Normas)
+    // ==========================================
+    const driver = window.driver.js.driver;
+    const driverObj = driver({
+        showProgress: true,
+        steps: [
+            { element: '#calendar', popover: { title: 'Grid de Horarios', description: 'Aquí puedes ver en tiempo real qué salas e ingenieros están ocupados.' } },
+            { element: '#header-equipos', popover: { title: 'Uso de Equipos y Micrófonos', description: 'Puedes solicitar o arrastrar instrumentos extra para tu sesión. Recuerda cuidarlos y no azotar los micrófonos.' } },
+            { element: '#drop-zone-reserva', popover: { title: 'Asignación Directa', description: 'Arrastra el equipo sobre este recuadro para agregarlo inmediatamente a tu consumo.' } },
+            {% if user.is_staff or user.is_superuser %}
+            { element: '#btn-reportes-admin', popover: { title: 'Reportes y Rentabilidad', description: 'Acceso directo para administradores sobre la rentabilidad del estudio.' } },
+            {% endif %}
+        ]
+    });
+
+    document.getElementById('start-tour-btn').addEventListener('click', function() {
+        driverObj.drive();
+    });
+
+});
+</script>
+{% endblock %}
+
+
+
+

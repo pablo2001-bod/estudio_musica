@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Equipo{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-4 p-4">
+                <h3 class="fw-bold mb-4 text-center">Editar Equipo</h3>
+                
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nombre del Equipo</label>
+                        <input type="text" name="nombre" class="form-control rounded-3" value="{{ equipo.nombre }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Categoría</label>
+                        <input type="text" name="categoria" class="form-control rounded-3" value="{{ equipo.categoria|default:'' }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Precio de Alquiler</label>
+                        <input type="number" step="0.01" name="precio_alquiler" class="form-control rounded-3" value="{{ equipo.precio_alquiler }}" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Fotografía</label>
+                        <input type="file" name="imagen" class="form-control rounded-3" accept="image/*">
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'equipos' %}" class="btn btn-outline-secondary rounded-pill w-50">Cancelar</a>
+                        <button type="submit" class="btn btn-primary rounded-pill w-50">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
