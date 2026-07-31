@@ -125,18 +125,14 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Configuración de Correo Electrónico
+# Configuración SMTP
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
-
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'pt369524@gmail.com'
-EMAIL_HOST_PASSWORD = 'wwpaswegeoztvpaz'
-
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_TIMEOUT = 10
+EMAIL_HOST_PASSWORD = 'wwpaswegeoztvpaz' # Tu contraseña de aplicación
+DEFAULT_FROM_EMAIL = 'Industria Damaris <pt369524@gmail.com>'
 
 # Configuración de Archivos Media (Para PDFs y Comprobantes de Pago)
 MEDIA_URL = '/media/'
