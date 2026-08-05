@@ -40,4 +40,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
 
     path('dashboard-reportes/', views.dashboard_reportes, name='dashboard_reportes'),
+    path('usuarios/', views.lista_usuarios, name='lista_usuarios'),
+    path('usuarios/eliminar/<int:usuario_id>/', views.eliminar_usuario, name='eliminar_usuario'),
+    path('usuarios/estado/<int:usuario_id>/', views.alternar_estado_usuario, name='alternar_estado_usuario'),
 ]

@@ -352,9 +352,7 @@ def cambiar_estado_reserva(request, reserva_id, estado):
         except Exception as e:
             print(f" Aviso: No se pudo despachar el correo electrónico por conexión/puerto: {e}")
 
-    # -------------------------------------------------------------
-    # 2. NOTIFICACIÓN AL INGENIERO (SI LA RESERVA FUE APROBADA)
-    # -------------------------------------------------------------
+
     if estado == 'Aprobada' and reserva.ingeniero and getattr(reserva.ingeniero, 'email', None):
         asunto_ing = f" ¡Nuevo Evento Asignado! - Sala {reserva.sala.nombre}"
         msg_ing = (
@@ -396,7 +394,6 @@ def actualizar_fecha_reserva(request):
             duracion = reserva.fecha_fin - reserva.fecha_inicio
             nueva_fecha_fin = nueva_fecha + duracion
 
-            # Validar que al arrastrar la fecha en FullCalendar tampoco choque con otra reserva
             cruces = Reserva.objects.filter(
                 sala=reserva.sala,
                 estado__in=['Aprobada', 'Pendiente'],
@@ -575,10 +572,13 @@ def iniciar_sesion(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            login(request, user)
-            messages.success(request, f'¡Bienvenido de nuevo, {user.username}!')
-            next_url = request.GET.get('next') or request.POST.get('next')
-            return redirect(next_url if next_url else 'index')
+            if user.is_active:
+                login(request, user)
+                messages.success(request, f'¡Bienvenido de nuevo, {user.username}!')
+                next_url = request.GET.get('next') or request.POST.get('next')
+                return redirect(next_url if next_url else 'index')
+            else:  # <-- AÑADE ESTE ELSE
+                messages.error(request, 'Tu cuenta ha sido desactivada por el administrador.')
         else:
             messages.error(request, 'Usuario o contraseña incorrectos. Por favor, intenta de nuevo.')
 
@@ -730,17 +730,12 @@ def dashboard_reportes(request):
         else:
             horas_regular += duracion_horas
 
-    # -------------------------------------------------------------
-    # 2. RENTABILIDAD DE EQUIPOS ALQUILADOS (Procesado en Python)
-    # -------------------------------------------------------------
     equipos = Equipo.objects.all()
     equipos_rentabilidad = []
 
     for eq in equipos:
-        # Contar cuántas reservas APROBADAS incluyen este equipo
         veces = eq.reserva_set.filter(estado='Aprobada').count()
         
-        # Calcular recaudado sumando con seguridad los tipos
         precio = float(eq.precio_alquiler or 0)
         recaudado = veces * precio
 
@@ -751,10 +746,8 @@ def dashboard_reportes(request):
             'total_recaudado': recaudado,
         })
 
-    # Ordenar los equipos de mayor a menor rentabilidad
     equipos_rentabilidad = sorted(equipos_rentabilidad, key=lambda x: x['total_recaudado'], reverse=True)
 
-    # Métricas generales
     total_ingresos_reservas = sum(float(r.total or 0) for r in reservas_aprobadas)
     total_reservas_cont = reservas_aprobadas.count()
 
@@ -767,3 +760,51 @@ def dashboard_reportes(request):
     }
 
     return render(request, 'estudio/dashboard_reportes.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(es_admin)
+def lista_usuarios(request):
+    busqueda = request.GET.get('q', '').strip()
+    usuarios = User.objects.all().order_by('-date_joined')
+
+    if busqueda:
+        usuarios = usuarios.filter(
+            Q(username__icontains=busqueda) |
+            Q(first_name__icontains=busqueda) |
+            Q(last_name__icontains=busqueda) |
+            Q(email__icontains=busqueda)
+        )
+
+    return render(request, 'estudio/lista_usuarios.html', {
+        'usuarios': usuarios,
+        'busqueda': busqueda
+    })
+
+@login_required(login_url='login')
+@user_passes_test(es_admin)
+def eliminar_usuario(request, usuario_id):
+    if request.method == 'POST':
+        user_to_delete = get_object_or_404(User, id=usuario_id)
+        
+        if user_to_delete == request.user:
+            return JsonResponse({'status': 'error', 'message': 'No puedes eliminar tu propia cuenta de administrador.'}, status=400)
+            
+        user_to_delete.delete()
+        return JsonResponse({'status': 'ok'})
+        
+    return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=400)
+
+@login_required(login_url='login')
+@user_passes_test(es_admin)
+def alternar_estado_usuario(request, usuario_id):
+    if request.method == 'POST':
+        user_obj = get_object_or_404(User, id=usuario_id)
+        if user_obj == request.user:
+            return JsonResponse({'status': 'error', 'message': 'No puedes desactivar tu propia cuenta.'}, status=400)
+            
+        user_obj.is_active = not user_obj.is_active
+        user_obj.save()
+        return JsonResponse({'status': 'ok', 'is_active': user_obj.is_active})
+        
+    return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=400)
