@@ -9,7 +9,7 @@
     <title>{% block title %}Gestor de Estudios & Ensayos Musicales{% endblock %}</title>
 
     <!-- Configuración PWA -->
-    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#212529">
     <link rel="apple-touch-icon" href="{% static 'images/icon-192.png' %}">
 
@@ -168,12 +168,12 @@
     <script>
         // 1. Registro del Service Worker
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js', { scope: '/' })
-                    .then(reg => console.log('Service Worker registrado con éxito en scope:', reg.scope))
-                    .catch(err => console.error('Error al registrar Service Worker:', err));
-            });
-        }
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then(reg => console.log('Service Worker registrado:', reg.scope))
+            .catch(err => console.error('Error Service Worker:', err));
+    });
+}
 
         // 2. Control del Botón/Banner Personalizado de Instalación
         let deferredPrompt;
