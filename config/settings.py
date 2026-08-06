@@ -152,3 +152,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Configuración de Archivos Media (Para PDFs y Comprobantes de Pago)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+WHITENOISE_MANIFEST_STRICT = False
