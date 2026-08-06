@@ -92,7 +92,7 @@
         <div class="col-lg-4 col-md-12">
             <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold text-dark mb-0">Equipos & Mics</h5>
+                    <h5 class="fw-bold text-dark mb-0">Equipos </h5>
                     <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill px-2 py-1 fs-7">{{ equipos|length }} en catálogo</span>
                 </div>
                 
@@ -131,15 +131,22 @@
       <div class="modal-body p-4">
         <div class="mb-3">
             <label class="form-label fw-semibold">Nombre de la Sala:</label>
-            <input type="text" name="nombre" class="form-control rounded-3" placeholder="Ej. Sala Premium A" required>
+            <input type="text" name="nombre" class="form-control rounded-3" placeholder="Ej. Sala Rock Premium" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Descripción:</label>
+            <textarea name="descripcion" class="form-control rounded-3" rows="2" placeholder="Detalles de tratamiento acústico, tamaño, amplificadores..."></textarea>
         </div>
         <div class="mb-3">
             <label class="form-label fw-semibold">Precio por Hora ($):</label>
             <input type="number" step="0.01" name="precio_hora" class="form-control rounded-3" placeholder="25.00" required>
         </div>
         <div class="mb-3">
-            <label class="form-label fw-semibold">Imagen de la Sala:</label>
-            <input type="file" name="imagen" class="form-control rounded-3" accept="image/*">
+            <label class="form-label fw-semibold">Imagen :</label>
+            <input type="file" name="imagen" class="form-control rounded-3" accept=".png, .jpg, .jpeg" onchange="previewImagenModal(event, 'preview-sala-modal')">
+            <div class="mt-2 text-center d-none" id="preview-sala-modal">
+                <img src="#" alt="Vista previa" class="img-fluid rounded-3 shadow-sm" style="max-height: 150px; object-fit: cover;">
+            </div>
         </div>
       </div>
       <div class="modal-footer border-0">
@@ -161,15 +168,30 @@
       <div class="modal-body p-4">
         <div class="mb-3">
             <label class="form-label fw-semibold">Nombre Completo:</label>
-            <input type="text" name="nombre" class="form-control rounded-3" placeholder="Ej. Carlos Santana" required>
+            <input type="text" name="nombre" class="form-control rounded-3" placeholder="Ej. Juan Pérez" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Correo Electrónico:</label>
+            <input type="email" name="email" class="form-control rounded-3" placeholder="ejemplo@gmail.com" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Precio por Hora ($):</label>
+            <input type="number" step="0.01" name="precio_hora" class="form-control rounded-3" placeholder="15.00" required>
         </div>
         <div class="mb-3">
             <label class="form-label fw-semibold">Especialidad:</label>
             <input type="text" name="especialidad" class="form-control rounded-3" placeholder="Ej. Mezcla & Masterización" required>
         </div>
         <div class="mb-3">
-            <label class="form-label fw-semibold">Fotografía:</label>
-            <input type="file" name="imagen" class="form-control rounded-3" accept="image/*">
+            <label class="form-label fw-semibold">Experiencia / Descripción:</label>
+            <textarea name="experiencia" class="form-control rounded-3" rows="2" placeholder="Años de experiencia, artistas producidos..."></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Fotografía :</label>
+            <input type="file" name="imagen" class="form-control rounded-3" accept=".png, .jpg, .jpeg" onchange="previewImagenModal(event, 'preview-ing-modal')">
+            <div class="mt-2 text-center d-none" id="preview-ing-modal">
+                <img src="#" alt="Vista previa" class="img-fluid rounded-3 shadow-sm" style="max-height: 150px; object-fit: cover;">
+            </div>
         </div>
       </div>
       <div class="modal-footer border-0">
@@ -185,25 +207,33 @@
     <form method="POST" action="{% url 'crear_equipo' %}" enctype="multipart/form-data" class="modal-content rounded-4 border-0 shadow">
       {% csrf_token %}
       <div class="modal-header bg-warning text-dark rounded-top-4">
-        <h5 class="modal-title fw-bold">Agregar Equipo / Micrófono</h5>
+        <h5 class="modal-title fw-bold">Agregar Equipo</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body p-4">
         <div class="mb-3">
             <label class="form-label fw-semibold">Nombre del Equipo:</label>
-            <input type="text" name="nombre" class="form-control rounded-3" placeholder="Ej. Micrófono Shure SM7B" required>
+            <input type="text" name="nombre" class="form-control rounded-3" placeholder="Ej. Shure SM58" required>
         </div>
         <div class="mb-3">
             <label class="form-label fw-semibold">Categoría:</label>
-            <input type="text" name="categoria" class="form-control rounded-3" placeholder="Ej. Micrófonos, Amplificadores" required>
+            <select name="categoria" class="form-select rounded-3" required>
+                <option value="Micrófono">Micrófono</option>
+                <option value="Amplificador">Amplificador</option>
+                <option value="Instrumento">Instrumento</option>
+                <option value="Accesorios">Accesorios</option>
+            </select>
         </div>
         <div class="mb-3">
             <label class="form-label fw-semibold">Precio de Alquiler ($):</label>
-            <input type="number" step="0.01" name="precio_alquiler" class="form-control rounded-3" placeholder="10.00" required>
+            <input type="number" step="0.01" name="precio_alquiler" class="form-control rounded-3" placeholder="5.00" required>
         </div>
         <div class="mb-3">
             <label class="form-label fw-semibold">Foto del Equipo:</label>
-            <input type="file" name="imagen" class="form-control rounded-3" accept="image/*">
+            <input type="file" name="imagen" class="form-control rounded-3" accept=".png, .jpg, .jpeg" onchange="previewImagenModal(event, 'preview-eq-modal')">
+            <div class="mt-2 text-center d-none" id="preview-eq-modal">
+                <img src="#" alt="Vista previa" class="img-fluid rounded-3 shadow-sm" style="max-height: 150px; object-fit: cover;">
+            </div>
         </div>
       </div>
       <div class="modal-footer border-0">
@@ -217,6 +247,34 @@
 
 {% block extra_js %}
 <script>
+function previewImagenModal(event, containerId) {
+    const input = event.target;
+    const container = document.getElementById(containerId);
+    const img = container.querySelector('img');
+    const file = input.files[0];
+
+    if (file) {
+        const fileType = file.type;
+        const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        
+        if (!validTypes.includes(fileType)) {
+            alert('Solo se admiten archivos de imagen en formato PNG o JPG.');
+            input.value = '';
+            container.classList.add('d-none');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function() {
+            img.src = reader.result;
+            container.classList.remove('d-none');
+        }
+        reader.readAsDataURL(file);
+    } else {
+        container.classList.add('d-none');
+    }
+}
+
 function confirmarEliminar(tipo, id, nombre) {
     let urlEliminar = `/${tipo}/eliminar/${id}/`;
 

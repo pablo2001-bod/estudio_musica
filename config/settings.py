@@ -17,7 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-b7volmahppx&msr^#zb-qc*nx%*dj!x7_l@2@#!28cc3jnfr&i'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-b7volmahppx&msr^#zb-qc*nx%*dj!x7_l@2@#!28cc3jnfr&i')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
@@ -71,11 +71,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
-# Usamos 127.0.0.1 en lugar de localhost para evitar el error Ident en Fedora
+# Lee DATABASE_URL desde las variables de Render, si no existe usa la BD local de Fedora
 DATABASES = {
     'default': dj_database_url.config(
         default='postgres://estudio_user:admin123@127.0.0.1:5432/estudio_db',
-        conn_max_age=600
+        conn_max_age=600,
+        ssl_require=False if DEBUG else True
     )
 }
 
@@ -121,18 +122,24 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Default primary key field type
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Configuración de Correo
+if DEBUG:
+    # En local (Fedora) no se conecta a Gmail para evitar congelamientos por bloqueo de puertos
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    # En producción (Render) enviará correos reales vía SMTP de Gmail
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-
-# Configuración SMTP
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'pt369524@gmail.com'
-EMAIL_HOST_PASSWORD = 'wwpaswegeoztvpaz' # Tu contraseña de aplicación
-DEFAULT_FROM_EMAIL = 'Industria Damaris <pt369524@gmail.com>'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'pt369524@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'dhupakbwubscwvmg')
+DEFAULT_FROM_EMAIL = f"Estudio y Musica <{EMAIL_HOST_USER}>"
+EMAIL_TIMEOUT = 5  # Cancela la espera si tarda más de 5 segundos
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Configuración de Archivos Media (Para PDFs y Comprobantes de Pago)
 MEDIA_URL = '/media/'

@@ -18,12 +18,12 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Correo Electrónico</label>
+                        <label class="form-label fw-semibold">Correo Electrónico </label>
                         <input type="email" name="email" class="form-control rounded-3" value="{{ ingeniero.email|default:'' }}" placeholder="ejemplo@gmail.com" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Precio</label>
+                        <label class="form-label fw-semibold">Precio por Hora ($)</label>
                         <input type="number" step="0.01" name="precio_hora" class="form-control rounded-3" value="{{ ingeniero.precio_hora|default:'0.00' }}" required>
                     </div>
 
@@ -33,16 +33,25 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Experiencia</label>
+                        <label class="form-label fw-semibold">Experiencia </label>
                         <textarea name="experiencia" class="form-control rounded-3" rows="3">{{ ingeniero.experiencia }}</textarea>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Fotografía</label>
-                        <input type="file" name="imagen" class="form-control rounded-3" accept="image/*">
-                        {% if ingeniero.imagen %}
-                            <small class="text-muted d-block mt-1">Imagen actual: {{ ingeniero.imagen.name }}</small>
-                        {% endif %}
+                        <input type="file" id="imagen-ing" name="imagen" class="form-control rounded-3" accept=".png, .jpg, .jpeg" onchange="previewImagenIngeniero(event)">
+                        
+                        <!-- Vista previa: Muestra la foto actual o la nueva elegida -->
+                        <div class="mt-3 text-center {% if not ingeniero.imagen %}d-none{% endif %}" id="preview-container-ing">
+                            <p class="small text-muted mb-1" id="preview-title">
+                                {% if ingeniero.imagen %}Imagen actual:{% else %}Vista previa:{% endif %}
+                            </p>
+                            <img id="img-preview-ing" 
+                                 src="{% if ingeniero.imagen %}{{ ingeniero.imagen.url }}{% else %}#{% endif %}" 
+                                 alt="Vista previa" 
+                                 class="img-fluid rounded-3 shadow-sm" 
+                                 style="max-height: 200px; object-fit: cover;">
+                        </div>
                     </div>
 
                     <div class="d-flex gap-2">
@@ -54,4 +63,33 @@
         </div>
     </div>
 </div>
+
+<script>
+function previewImagenIngeniero(event) {
+    const input = event.target;
+    const container = document.getElementById('preview-container-ing');
+    const preview = document.getElementById('img-preview-ing');
+    const title = document.getElementById('preview-title');
+    const file = input.files[0];
+
+    if (file) {
+        const fileType = file.type;
+        const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        
+        if (!validTypes.includes(fileType)) {
+            alert('Solo se admiten archivos de imagen en formato PNG o JPG.');
+            input.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function() {
+            preview.src = reader.result;
+            title.textContent = 'Nueva imagen seleccionada:';
+            container.classList.remove('d-none');
+        }
+        reader.readAsDataURL(file);
+    }
+}
+</script>
 {% endblock %}

@@ -17,25 +17,25 @@
 
                     <div class="mb-3">
                         <label for="nombre" class="form-label fw-bold">Nombre de la Sala <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control rounded-3" id="nombre" name="nombre" placeholder="Ej:Sala Rock" required>
+                        <input type="text" class="form-control rounded-3" id="nombre" name="nombre" placeholder="Ej: Sala Rock" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="descripcion" class="form-label fw-bold">Descripción</label>
-                        <textarea class="form-control rounded-3" id="descripcion" name="descripcion" rows="3" placeholder="Detalla el tratamiento acústico, tamaño, amplificadores y mas."></textarea>
+                        <textarea class="form-control rounded-3" id="descripcion" name="descripcion" rows="3" placeholder="Detalla el tratamiento acústico, tamaño, amplificadores y más."></textarea>
                     </div>
 
                     <div class="mb-3">
                         <label for="precio_hora" class="form-label fw-bold">Precio por Hora <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text rounded-start-3">$</span>
-                            <input type="number" step="0.01" class="form-control rounded-end-3" id="precio_hora" name="precio_hora" placeholder="555.00" required>
+                            <input type="number" step="0.01" class="form-control rounded-end-3" id="precio_hora" name="precio_hora" placeholder="25.00" required>
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label for="imagen" class="form-label fw-bold">Imagen de la Sala</label>
-                        <input type="file" class="form-control rounded-3" id="imagen" name="imagen" accept="image/*" onchange="previewImagen(event)">
+                        <input type="file" class="form-control rounded-3" id="imagen" name="imagen" accept=".png, .jpg, .jpeg" onchange="previewImagen(event)">
                         
                         <div class="mt-3 text-center d-none" id="preview-container">
                             <p class="small text-muted mb-1">Vista previa:</p>
@@ -58,19 +58,31 @@
 </div>
 
 <script>
-// Función para mostrar la vista previa de la imagen antes de subirla
+// Función para validar la extensión y mostrar la vista previa
 function previewImagen(event) {
-    const reader = new FileReader();
+    const input = event.target;
     const container = document.getElementById('preview-container');
     const preview = document.getElementById('img-preview');
+    const file = input.files[0];
 
-    reader.onload = function() {
-        preview.src = reader.result;
-        container.classList.remove('d-none');
-    }
+    if (file) {
+        // Validar tipos MIME permitidos
+        const fileType = file.type;
+        const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        
+        if (!validTypes.includes(fileType)) {
+            alert('Solo se admiten imágenes en formato PNG o JPG.');
+            input.value = ''; // Limpia la selección invalida
+            container.classList.add('d-none');
+            return;
+        }
 
-    if (event.target.files[0]) {
-        reader.readAsDataURL(event.target.files[0]);
+        const reader = new FileReader();
+        reader.onload = function() {
+            preview.src = reader.result;
+            container.classList.remove('d-none');
+        }
+        reader.readAsDataURL(file);
     } else {
         container.classList.add('d-none');
     }

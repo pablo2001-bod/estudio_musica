@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import TemplateView
 from . import views
 
 urlpatterns = [
@@ -43,4 +44,8 @@ urlpatterns = [
     path('usuarios/', views.lista_usuarios, name='lista_usuarios'),
     path('usuarios/eliminar/<int:usuario_id>/', views.eliminar_usuario, name='eliminar_usuario'),
     path('usuarios/estado/<int:usuario_id>/', views.alternar_estado_usuario, name='alternar_estado_usuario'),
+    path('sw.js', TemplateView.as_view(
+        template_name='estudio/sw.js', 
+        content_type='application/javascript'
+    ), name='sw.js'),
 ]

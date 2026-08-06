@@ -8,31 +8,54 @@
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
     <title>{% block title %}Gestor de Estudios & Ensayos Musicales{% endblock %}</title>
 
-    <!-- Fuentes y CDNs -->
+    <!-- Configuración PWA -->
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#212529">
+    <link rel="apple-touch-icon" href="{% static 'images/icon-192.png' %}">
+
+    <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
 
+    <!-- CSS de Terceros (CDN) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"/>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    
-    <!-- Hotkeys.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <!-- JS de Terceros (CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/hotkeys-js@3.13.0/dist/hotkeys.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <!-- CSS Local -->
-    <link rel="stylesheet" href="{% static 'css/all.min.css' %}">    
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'swiper/swiper-bundle.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+    {% block extra_head %}{% endblock %}
     {% block extra_css %}{% endblock %}
 </head>
 
 <body class="bg-light">
+   <!-- Banner Flotante para Descargar la App (PWA) -->
+    <div id="pwa-install-banner" class="card position-fixed bottom-0 end-0 m-3 p-3 shadow-lg border-0 bg-dark text-white rounded-4 align-items-center justify-content-between gap-3" style="display: none; z-index: 1050; max-width: 360px;">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary bg-opacity-20 p-2 rounded-circle d-flex align-items-center justify-content-center">
+                <i class="fa-solid fa-mobile-screen-button text-primary fs-4"></i>
+            </div>
+            <div>
+                <strong class="d-block text-white fw-bold fs-6">¡Instala nuestra App!</strong>
+                <small class="text-white-50" style="font-size: 0.8rem; line-height: 1.2; display: block;">Accede más rápido desde tu escritorio o celular.</small>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button id="btn-pwa-install" class="btn btn-primary btn-sm rounded-pill fw-bold px-3">Instalar</button>
+            <button id="btn-pwa-close" type="button" class="btn-close btn-close-white btn-sm" aria-label="Cerrar"></button>
+        </div>
+    </div>
+
     <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm py-3">
         <div class="container-fluid px-4">
             <a href="{% url 'index' %}" class="navbar-brand d-flex align-items-center me-4">
@@ -50,7 +73,7 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'ingenieros' %}">Ingenieros de Audio</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'equipos' %}">Equipos & Mics</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'grid_ocupacion' %}">Cronograma de reservas</a></li> 
-               </ul>
+                </ul>
 
                 <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
                     {% if user.is_authenticated %}
@@ -135,10 +158,66 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    
+    <!-- JS de FullCalendar para que renderice el cronograma -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
 
+    <!-- Script PWA (Registro de Service Worker y Botón de Instalación) -->
+    <script>
+        // 1. Registro del Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then(reg => console.log('Service Worker registrado con éxito en scope:', reg.scope))
+                    .catch(err => console.error('Error al registrar Service Worker:', err));
+            });
+        }
+
+        // 2. Control del Botón/Banner Personalizado de Instalación
+        let deferredPrompt;
+        const installBanner = document.getElementById('pwa-install-banner');
+        const installButton = document.getElementById('btn-pwa-install');
+        const closeButton = document.getElementById('btn-pwa-close');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            if (installBanner) {
+                installBanner.classList.add('d-flex');
+                installBanner.style.display = 'flex';
+            }
+        });
+
+        if (installButton) {
+            installButton.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`Respuesta del usuario: ${outcome}`);
+
+                deferredPrompt = null;
+                installBanner.style.display = 'none';
+            });
+        }
+
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                installBanner.style.display = 'none';
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            if (installBanner) installBanner.style.display = 'none';
+            console.log('¡App instalada con éxito!');
+        });
+    </script>
+
     {% block extra_js %}{% endblock %}
+
     <script>
         document.addEventListener('keydown', function(event) {
             // ATAJO INTELIGENTE: Alt + R o Ctrl + Alt + R
@@ -157,6 +236,5 @@
             }
         });
     </script>
-
 </body>
 </html>

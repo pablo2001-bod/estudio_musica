@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta, date
 
+from io import BytesIO
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib import messages
@@ -7,12 +9,12 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import Sum, Count, ProtectedError
+from django.db.models import Sum, Count, ProtectedError, Q, F, ExpressionWrapper, DecimalField, FloatField
+from django.db.models.functions import Coalesce
 from django.core.mail import send_mail
 from django.conf import settings
 
-from django.db.models import Sum, Count, Q, F, ExpressionWrapper, DecimalField, FloatField
-from django.db.models.functions import Coalesce
+import qrcode
 
 from .models import Sala, Ingeniero, Equipo, Reserva
 from .forms import RegistroForm
