@@ -1,6 +1,6 @@
 {
-  "name": "Gestor de Estudios & Ensayos Musicales",
-  "short_name": "EstudioApp",
+  "name": "Estudio",
+  "short_name": "Estudio",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#212529",
